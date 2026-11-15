@@ -1,0 +1,95 @@
+# ==== FlClash / Mihomo 覆写（Merge 类型）====
+# 由 _worker.js (Senflare Link Lite v4.6.2) 的规则提取，不含自动测速组。
+# 可选链式代理只在 JS 版提供；若 JavaScript 类型导入失败，改用这个 Merge 版本。
+
+proxy-groups:
+  - name: 🚀 节点选择
+    type: select
+    include-all: true
+    exclude-filter: '直连|拦截|^DIRECT$|^REJECT$|剩余流量|套餐到期|距离下次|过期时间|官网|Expire|Traffic|重置'
+    proxies:
+      - 🎯 全球直连
+    icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/Proxy.svg
+
+  - name: 🤖 AI 助手
+    type: select
+    include-all: true
+    exclude-filter: '直连|拦截|^DIRECT$|^REJECT$|剩余流量|套餐到期|距离下次|过期时间|官网|Expire|Traffic|重置'
+    proxies:
+      - 🚀 节点选择
+    icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/OpenAI.svg
+
+  - name: 🎯 全球直连
+    type: select
+    proxies:
+      - DIRECT
+    icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/China.svg
+
+  - name: 🚫 广告拦截
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+    icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/AdBlock.svg
+
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+    icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/Stack.svg
+
+rules:
+  - RULE-SET,geoip-private,DIRECT,no-resolve
+  - RULE-SET,geosite-private,DIRECT
+  - DOMAIN-SUFFIX,senflarelink.de5.net,DIRECT
+  - DOMAIN-SUFFIX,z.ai,🚀 节点选择
+  # 上游 flclash.js 拦截的中国移动终端 DM 遥测域名
+  - DOMAIN-SUFFIX,fxltsbl.com,REJECT
+  # v4.6.2 的「拦截规则」如非空，放在这里（DOMAIN-SUFFIX,<域名>,REJECT）
+  # 字节系功能性域名，先于广告集放行
+  - DOMAIN-SUFFIX,live.douyin.com,DIRECT
+  - DOMAIN-SUFFIX,webcast.amemv.com,DIRECT
+  - DOMAIN-SUFFIX,webcast5-open-hl.douyin.com,DIRECT
+  - DOMAIN-SUFFIX,webcast5-ws-web-hl.douyin.com,DIRECT
+  - DOMAIN-SUFFIX,streamingtool-hl.douyin.com,DIRECT
+  - DOMAIN-SUFFIX,music.douyin.com,DIRECT
+  - DOMAIN-SUFFIX,douyinvod.com,DIRECT
+  - DOMAIN-SUFFIX,douyinpic.com,DIRECT
+  - DOMAIN-SUFFIX,douyinstatic.com,DIRECT
+  - RULE-SET,ads,🚫 广告拦截
+  - RULE-SET,geosite-category-ads-all,🚫 广告拦截
+  - RULE-SET,geosite-category-ai-!cn,🤖 AI 助手
+  - DOMAIN-SUFFIX,miav-cse.avlyun.com,REJECT
+  - DOMAIN-SUFFIX,miui-fxcse.avlyun.com,REJECT
+  - DOMAIN-SUFFIX,a0.app.xiaomi.com,REJECT
+  - DOMAIN-SUFFIX,api.installer.xiaomi.com,REJECT
+  - AND,((NETWORK,UDP),(DST-PORT,443),(NOT,((OR,((RULE-SET,geosite-cn),(RULE-SET,geoip-cn)))))),REJECT
+  - RULE-SET,geosite-github,🚀 节点选择
+  - RULE-SET,geosite-google,🚀 节点选择
+  - RULE-SET,geosite-category-games@cn,DIRECT
+  - RULE-SET,geosite-epicgames,DIRECT
+  - RULE-SET,geosite-nvidia@cn,DIRECT
+  - RULE-SET,geosite-cn,DIRECT
+  - RULE-SET,geoip-cn,DIRECT
+  - RULE-SET,geosite-apple-cn,DIRECT
+  - RULE-SET,geosite-microsoft,DIRECT
+  - MATCH,🐟 漏网之鱼
+
+rule-providers:
+  geoip-private: { type: http, behavior: ipcidr, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs' }
+  geosite-private: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/private.mrs' }
+  ads: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/DustinWin/ruleset_geodata@mihomo-ruleset/ads.mrs' }
+  geosite-category-ads-all: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ads-all.mrs' }
+  'geosite-category-ai-!cn': { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-ai-!cn.mrs' }
+  geosite-github: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/github.mrs' }
+  geosite-google: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/google.mrs' }
+  'geosite-category-games@cn': { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/category-games@cn.mrs' }
+  geosite-epicgames: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/epicgames.mrs' }
+  'geosite-nvidia@cn': { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/nvidia@cn.mrs' }
+  geosite-cn: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs' }
+  geoip-cn: { type: http, behavior: ipcidr, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/cn.mrs' }
+  geosite-apple-cn: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/apple-cn.mrs' }
+  geosite-microsoft: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/microsoft.mrs' }
+  douyin: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/douyin.mrs' }
+  geolocation-cn: { type: http, behavior: domain, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/geolocation-cn.mrs' }
