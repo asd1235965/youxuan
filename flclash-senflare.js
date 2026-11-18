@@ -1,6 +1,6 @@
 /**
  * FlClash / Mihomo 配置脚本
- * 移植源：Senflare Link Lite v4.6.2 主后端 _worker.js
+ * 移植源：Senflare Link Lite v4.6.5 主后端 _worker.js
  * 上游增强：可选链式代理（默认关闭）、中国移动 DM 遥测拦截
  * 链式代理用法：把 ENABLE_CHAIN 改为 true；在「链式前置」选入口节点，
  *              「链式出口」选落地节点，再把主策略组切到「链式出口」。
@@ -18,11 +18,11 @@ function main(config) {
   var P = [
     ['geoip-private', 'geoip/private.mrs', 'DIRECT,no-resolve', 'private'],
     ['geosite-private', 'geosite/private.mrs', 'DIRECT', 'private'],
-    ['ads', null, '🚫 广告拦截', 'ads'],
-    ['geosite-category-ads-all', 'geosite/category-ads-all.mrs', '🚫 广告拦截', 'ads'],
-    ['geosite-category-ai-!cn', 'geosite/category-ai-!cn.mrs', '🤖 AI 助手', 'ai'],
-    ['geosite-github', 'geosite/github.mrs', '🚀 节点选择', 'proxy'],
-    ['geosite-google', 'geosite/google.mrs', '🚀 节点选择', 'proxy'],
+    ['ads', null, '广告拦截', 'ads'],
+    ['geosite-category-ads-all', 'geosite/category-ads-all.mrs', '广告拦截', 'ads'],
+    ['geosite-category-ai-!cn', 'geosite/category-ai-!cn.mrs', 'AI 助手', 'ai'],
+    ['geosite-github', 'geosite/github.mrs', '节点选择', 'proxy'],
+    ['geosite-google', 'geosite/google.mrs', '节点选择', 'proxy'],
     ['geosite-category-games@cn', 'geosite/category-games@cn.mrs', 'DIRECT', 'direct'],
     ['geosite-epicgames', 'geosite/epicgames.mrs', 'DIRECT', 'direct'],
     ['geosite-nvidia@cn', 'geosite/nvidia@cn.mrs', 'DIRECT', 'direct'],
@@ -37,9 +37,9 @@ function main(config) {
   var DIRECT_DOMAINS = ['senflarelink.de5.net'];
   var PROXY_DOMAINS = ['z.ai'];
   var AD_DOMAINS = ['miav-cse.avlyun.com', 'miui-fxcse.avlyun.com', 'a0.app.xiaomi.com', 'api.installer.xiaomi.com'];
-  // v4.6.2 新增：面板「拦截规则」（对应 UserRejectDomains）；留空即不启用
+  // v4.6.2 起新增：面板「拦截规则」（对应 UserRejectDomains）；留空即不启用
   var REJECT_DOMAINS = [];
-  // v4.6.2 新增：字节系功能性域名，先于广告规则放行，避免直播/音乐被误拦
+  // v4.6.2 起新增：字节系功能性域名，先于广告规则放行，避免直播/音乐被误拦
   var BYTEDANCE_KEEP = [
     'live.douyin.com',
     'webcast.amemv.com',
@@ -119,7 +119,7 @@ function main(config) {
 
     for (gi = 0; gi < groups.length; gi++) {
       var group = groups[gi], gname = String(group.name || ''), ex;
-      if (gname === CHAIN_ENTRY || gname === CHAIN_EXIT || gname === '🎯 全球直连' || gname === '🚫 广告拦截') continue;
+      if (gname === CHAIN_ENTRY || gname === CHAIN_EXIT || gname === '全球直连' || gname === '广告拦截') continue;
       group.proxies = group.proxies || [];
       if (group.proxies.indexOf(CHAIN_EXIT) < 0) group.proxies.push(CHAIN_EXIT);
       ex = String(group['exclude-filter'] || '');
@@ -132,7 +132,7 @@ function main(config) {
       'include-all': true,
       'exclude-filter': EXCLUDE + '|' + CHAIN_ENTRY_EXCLUDE,
       'empty-fallback': 'REJECT',
-      proxies: ['🎯 全球直连'],
+      proxies: ['全球直连'],
       icon: ICON + 'Proxy.svg'
     });
     groups.push({
@@ -174,8 +174,8 @@ function main(config) {
   // ===== TUN（开关交给客户端 UI，这里只定参数）=====
   config['tun'] = {
     enable: false,
-    stack: 'mixed',
-    'endpoint-independent-nat': true,
+    'auto-route': true,
+    'auto-detect-interface': true,
     mtu: 1480,
     'dns-hijack': ['any:53', 'tcp://any:53']
   };
@@ -212,11 +212,11 @@ function main(config) {
 
   // ===== 策略组（不含自动测速组）=====
   config['proxy-groups'] = [
-    { name: '🚀 节点选择', type: 'select', 'include-all': true, 'exclude-filter': EXCLUDE, proxies: ['🎯 全球直连'], icon: ICON + 'Proxy.svg' },
-    { name: '🤖 AI 助手', type: 'select', 'include-all': true, 'exclude-filter': EXCLUDE, proxies: ['🚀 节点选择'], icon: ICON + 'OpenAI.svg' },
-    { name: '🎯 全球直连', type: 'select', proxies: ['DIRECT'], icon: ICON + 'China.svg' },
-    { name: '🚫 广告拦截', type: 'select', proxies: ['REJECT', 'DIRECT'], icon: ICON + 'AdBlock.svg' },
-    { name: '🐟 漏网之鱼', type: 'select', proxies: ['🚀 节点选择', '🎯 全球直连'], icon: ICON + 'Stack.svg' }
+    { name: '节点选择', type: 'select', 'include-all': true, 'exclude-filter': EXCLUDE, proxies: ['全球直连'], icon: ICON + 'Proxy.svg' },
+    { name: 'AI 助手', type: 'select', 'include-all': true, 'exclude-filter': EXCLUDE, proxies: ['节点选择'], icon: ICON + 'OpenAI.svg' },
+    { name: '全球直连', type: 'select', proxies: ['DIRECT'], icon: ICON + 'China.svg' },
+    { name: '广告拦截', type: 'select', proxies: ['REJECT', 'DIRECT'], icon: ICON + 'AdBlock.svg' },
+    { name: '漏网之鱼', type: 'select', proxies: ['节点选择', '全球直连'], icon: ICON + 'Stack.svg' }
   ];
 
   // ===== 规则集 =====
@@ -235,7 +235,7 @@ function main(config) {
   // ===== 分流规则 =====
   rules = rules.concat(segRules('private'));
   for (i = 0; i < DIRECT_DOMAINS.length; i++) rules.push('DOMAIN-SUFFIX,' + DIRECT_DOMAINS[i] + ',DIRECT');
-  for (i = 0; i < PROXY_DOMAINS.length; i++) rules.push('DOMAIN-SUFFIX,' + PROXY_DOMAINS[i] + ',🚀 节点选择');
+  for (i = 0; i < PROXY_DOMAINS.length; i++) rules.push('DOMAIN-SUFFIX,' + PROXY_DOMAINS[i] + ',节点选择');
   for (i = 0; i < REJECT_DOMAINS.length; i++) rules.push('DOMAIN-SUFFIX,' + REJECT_DOMAINS[i] + ',REJECT');
   for (i = 0; i < TRACKER_DOMAINS.length; i++) rules.push('DOMAIN-SUFFIX,' + TRACKER_DOMAINS[i] + ',REJECT');
   for (i = 0; i < BYTEDANCE_KEEP.length; i++) rules.push('DOMAIN-SUFFIX,' + BYTEDANCE_KEEP[i] + ',DIRECT');
@@ -245,7 +245,7 @@ function main(config) {
   rules.push('AND,((NETWORK,UDP),(DST-PORT,443),(NOT,((OR,((RULE-SET,geosite-cn),(RULE-SET,geoip-cn)))))),REJECT');
   rules = rules.concat(segRules('proxy'));
   rules = rules.concat(segRules('direct'));
-  rules.push('MATCH,🐟 漏网之鱼');
+  rules.push('MATCH,漏网之鱼');
   config['rules'] = rules;
 
   if (ENABLE_CHAIN === true) applyChainProxy(config);

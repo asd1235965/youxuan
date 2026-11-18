@@ -1,52 +1,52 @@
 # ==== FlClash / Mihomo 覆写（Merge 类型）====
-# 由 _worker.js (Senflare Link Lite v4.6.2) 的规则提取，不含自动测速组。
+# 由 _worker.js (Senflare Link Lite v4.6.5) 的规则提取，不含自动测速组。
 # 可选链式代理只在 JS 版提供；若 JavaScript 类型导入失败，改用这个 Merge 版本。
 
 proxy-groups:
-  - name: 🚀 节点选择
+  - name: 节点选择
     type: select
     include-all: true
-    exclude-filter: '直连|拦截|^DIRECT$|^REJECT$|剩余流量|套餐到期|距离下次|过期时间|官网|Expire|Traffic|重置'
+    exclude-filter: '^直连$|^拦截$|^DIRECT$|^REJECT$|剩余流量|套餐到期|距离下次|过期时间|官网|Expire|Traffic|重置'
     proxies:
-      - 🎯 全球直连
+      - 全球直连
     icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/Proxy.svg
 
-  - name: 🤖 AI 助手
+  - name: AI 助手
     type: select
     include-all: true
-    exclude-filter: '直连|拦截|^DIRECT$|^REJECT$|剩余流量|套餐到期|距离下次|过期时间|官网|Expire|Traffic|重置'
+    exclude-filter: '^直连$|^拦截$|^DIRECT$|^REJECT$|剩余流量|套餐到期|距离下次|过期时间|官网|Expire|Traffic|重置'
     proxies:
-      - 🚀 节点选择
+      - 节点选择
     icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/OpenAI.svg
 
-  - name: 🎯 全球直连
+  - name: 全球直连
     type: select
     proxies:
       - DIRECT
     icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/China.svg
 
-  - name: 🚫 广告拦截
+  - name: 广告拦截
     type: select
     proxies:
       - REJECT
       - DIRECT
     icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/AdBlock.svg
 
-  - name: 🐟 漏网之鱼
+  - name: 漏网之鱼
     type: select
     proxies:
-      - 🚀 节点选择
-      - 🎯 全球直连
+      - 节点选择
+      - 全球直连
     icon: https://cdn.jsdmirror.com/gh/AIsouler/MyClash@main/Icons/svg/Stack.svg
 
 rules:
   - RULE-SET,geoip-private,DIRECT,no-resolve
   - RULE-SET,geosite-private,DIRECT
   - DOMAIN-SUFFIX,senflarelink.de5.net,DIRECT
-  - DOMAIN-SUFFIX,z.ai,🚀 节点选择
+  - DOMAIN-SUFFIX,z.ai,节点选择
   # 上游 flclash.js 拦截的中国移动终端 DM 遥测域名
   - DOMAIN-SUFFIX,fxltsbl.com,REJECT
-  # v4.6.2 的「拦截规则」如非空，放在这里（DOMAIN-SUFFIX,<域名>,REJECT）
+  # v4.6.x 的「拦截规则」如非空，放在这里（DOMAIN-SUFFIX,<域名>,REJECT）
   # 字节系功能性域名，先于广告集放行
   - DOMAIN-SUFFIX,live.douyin.com,DIRECT
   - DOMAIN-SUFFIX,webcast.amemv.com,DIRECT
@@ -57,16 +57,16 @@ rules:
   - DOMAIN-SUFFIX,douyinvod.com,DIRECT
   - DOMAIN-SUFFIX,douyinpic.com,DIRECT
   - DOMAIN-SUFFIX,douyinstatic.com,DIRECT
-  - RULE-SET,ads,🚫 广告拦截
-  - RULE-SET,geosite-category-ads-all,🚫 广告拦截
-  - RULE-SET,geosite-category-ai-!cn,🤖 AI 助手
+  - RULE-SET,ads,广告拦截
+  - RULE-SET,geosite-category-ads-all,广告拦截
+  - RULE-SET,geosite-category-ai-!cn,AI 助手
   - DOMAIN-SUFFIX,miav-cse.avlyun.com,REJECT
   - DOMAIN-SUFFIX,miui-fxcse.avlyun.com,REJECT
   - DOMAIN-SUFFIX,a0.app.xiaomi.com,REJECT
   - DOMAIN-SUFFIX,api.installer.xiaomi.com,REJECT
   - AND,((NETWORK,UDP),(DST-PORT,443),(NOT,((OR,((RULE-SET,geosite-cn),(RULE-SET,geoip-cn)))))),REJECT
-  - RULE-SET,geosite-github,🚀 节点选择
-  - RULE-SET,geosite-google,🚀 节点选择
+  - RULE-SET,geosite-github,节点选择
+  - RULE-SET,geosite-google,节点选择
   - RULE-SET,geosite-category-games@cn,DIRECT
   - RULE-SET,geosite-epicgames,DIRECT
   - RULE-SET,geosite-nvidia@cn,DIRECT
@@ -74,7 +74,7 @@ rules:
   - RULE-SET,geoip-cn,DIRECT
   - RULE-SET,geosite-apple-cn,DIRECT
   - RULE-SET,geosite-microsoft,DIRECT
-  - MATCH,🐟 漏网之鱼
+  - MATCH,漏网之鱼
 
 rule-providers:
   geoip-private: { type: http, behavior: ipcidr, format: mrs, interval: 86400, proxy: DIRECT, url: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geoip/private.mrs' }
